@@ -206,8 +206,8 @@ def game () :
             else :
                 printBuffer += '\n' + str(flags) + '/' + str(bombs) + ' flags left'
                 printBuffer += '\n\nwasd moves\nspace digs\nf flags'
-            os.system('cls')
             printBuffer += '\n'
+            os.system('cls')
             print(printBuffer)
 
 while True : game()
