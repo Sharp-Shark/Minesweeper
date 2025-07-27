@@ -82,24 +82,24 @@ def generate_board (width, height, bombs, nobomb_coords) :
     return (board, bomb_coords)
 
 def render_board (board, mask, cursor) :
-    printBuffer = ''
+    print_buffer = ''
     y = 0
     for row in mask :
         x = 0
         for tile in row :
             if (x, y) == cursor :
-                printBuffer += x1b_underline
+                print_buffer += x1b_underline
             if tile == 1 :
-                printBuffer += tile_graphic[board[y][x]]
+                print_buffer += tile_graphic[board[y][x]]
             elif tile == -1 :
-                printBuffer += tile_graphic['f']
+                print_buffer += tile_graphic['f']
             else :
-                printBuffer += tile_graphic['h']
-            printBuffer += ' '
+                print_buffer += tile_graphic['h']
+            print_buffer += ' '
             x += 1
-        printBuffer = printBuffer[:len(printBuffer) - 1] + '\n'
+        print_buffer = print_buffer[:len(print_buffer) - 1] + '\n'
         y += 1
-    return printBuffer
+    return print_buffer
     
 def game () :
     try :
@@ -117,14 +117,14 @@ def game () :
     
     mask = [[0 for x in range(width)] for y in range(height)] # 1 is revealed, 0 is hidden, -1 is flagged
     board, bomb_coords = [], set()
-    boardGenerated = False
+    board_generated = False
     cursor = ((math.floor(width / 2), math.floor(height / 2)))
     flags = bombs # amount of flags left
     remaining = width * height - bombs # amount of safe tiles remaining before victory
     queue = [] # dig queue
     kaboom = False # lose
     victory = False
-    printNeeded = True
+    print_needed = True
     
     while not (victory or kaboom) :
         if msvcrt.kbhit() :
@@ -134,28 +134,28 @@ def game () :
                 x, y = cursor[0], cursor[1] - 1
                 if is_pos_bounded(x, y, width, height) :
                     cursor = (x, y)
-                    printNeeded = True
+                    print_needed = True
             elif key == b's' :
                 x, y = cursor[0], cursor[1] + 1
                 if is_pos_bounded(x, y, width, height) :
                     cursor = (x, y)
-                    printNeeded = True
+                    print_needed = True
             elif key == b'd' :
                 x, y = cursor[0] + 1, cursor[1]
                 if is_pos_bounded(x, y, width, height) :
                     cursor = (x, y)
-                    printNeeded = True
+                    print_needed = True
             elif key == b'a' :
                 x, y = cursor[0] - 1, cursor[1]
                 if is_pos_bounded(x, y, width, height) :
                     cursor = (x, y)
-                    printNeeded = True
+                    print_needed = True
             elif key == b' ' :
                 if mask[y][x] == 0 :
                     queue.append(cursor)
-                    printNeeded = True
-                if not boardGenerated :
-                    boardGenerated = True
+                    print_needed = True
+                if not board_generated :
+                    board_generated = True
                     nobomb_coords = set()
                     nobomb_coords.add(cursor)
                     for neighbour in neighbours :
@@ -165,11 +165,11 @@ def game () :
                 if mask[y][x] == 0 and flags > 0 :
                     mask[y][x] = -1
                     flags -= 1
-                    printNeeded = True
+                    print_needed = True
                 elif mask[y][x] == -1 :
                     mask[y][x] = 0
                     flags += 1
-                    printNeeded = True
+                    print_needed = True
         
         while len(queue) > 0 :
             x, y = queue.pop()
@@ -195,19 +195,19 @@ def game () :
                         if board[y][x] == '*' : mask[y][x] = -1
                         else : mask[y][x] = 1
         
-        if printNeeded :
-            printNeeded = False
-            printBuffer = ''
-            printBuffer += render_board(board, mask, cursor)
+        if print_needed :
+            print_needed = False
+            print_buffer = ''
+            print_buffer += render_board(board, mask, cursor)
             if kaboom :
-                printBuffer += '\n' + x1b_bg_red + 'KABOOM!' + x1b_reset
+                print_buffer += '\n' + x1b_bg_red + 'KABOOM!' + x1b_reset
             elif victory :
-                printBuffer += '\n' + x1b_bg_blue + 'CLEAR!' + x1b_reset
+                print_buffer += '\n' + x1b_bg_blue + 'CLEAR!' + x1b_reset
             else :
-                printBuffer += '\n' + str(flags) + '/' + str(bombs) + ' flags left'
-                printBuffer += '\n\nwasd moves\nspace digs\nf flags'
-            printBuffer += '\n'
+                print_buffer += '\n' + str(flags) + '/' + str(bombs) + ' flags left'
+                print_buffer += '\n\nwasd moves\nspace digs\nf flags'
+            print_buffer += '\n'
             os.system('cls')
-            print(printBuffer)
+            print(print_buffer)
 
 while True : game()
