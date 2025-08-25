@@ -111,7 +111,7 @@ def game () :
     except :
         height = 9
     try :
-        bombs = max(0, min(width * height - 1, int(input('bombs '))))
+        bombs = max(0, min(width * height - 9, int(input('bombs '))))
     except :
         bombs = 9
     
